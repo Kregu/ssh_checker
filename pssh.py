@@ -7,10 +7,21 @@ from time import sleep
 
 host = '192.168.1.1'
 user = 'admin'
-secret = '13425'
+secret = settings.secret
 port = 22
 commands = ['show sys']
 encoding = 'utf-8'
+
+filepath = 'data.txt'
+word_search = 'cpu'
+
+message = 'Ahtung!'
+
+def find_text(text: str):
+    if word_search in text:
+        send_telegram(message)
+        print(message)
+
 
 def send_telegram(text: str):
 
@@ -27,6 +38,7 @@ def send_telegram(text: str):
     if r.status_code != 200:
         print('Error send to telegram')
 
+
 def main():
     while True:
 
@@ -42,14 +54,16 @@ def main():
                  
         client.close()
 
+        data = data.decode(encoding)
+        find_text(data)
         
         with open('data.txt', 'a') as file_data:
             file_data.write(str(datetime.today().strftime("%Y-%m-%d %H:%M:%S") + '\n'))
-            file_data.write(data.decode(encoding) + '\n')
+            file_data.write(data + '\n')
 
 
-        send_telegram(data.decode(encoding))
         sleep(10)
+
 
 if __name__ == '__main__':
     main()
